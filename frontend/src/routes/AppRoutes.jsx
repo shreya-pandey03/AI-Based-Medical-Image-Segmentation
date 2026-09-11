@@ -1,28 +1,20 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
-import Login from "../pages/Login";
-import Register from "../pages/Register";
+import { Navigate, Route, Routes } from "react-router-dom";
+import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
-import Scans from "../pages/Scans";
-import ScanViewer from "../pages/ScanViewer";
-import Patients from "../pages/Patients";
-import Reports from "../pages/Reports";
-import Settings from "../pages/Settings";
+import NotFound from "../pages/NotFound";
 
-export default function AppRoutes() {
+function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <Routes>
+      <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/scans" element={<Scans />} />
-        <Route path="/scans/:scanId" element={<ScanViewer />} />
-        <Route path="/patients" element={<Patients />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </BrowserRouter>
+      </Route>
+
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
+
+export default AppRoutes;

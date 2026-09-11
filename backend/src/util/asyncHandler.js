@@ -1,11 +1,9 @@
-const asyncHandler = (requestHandler)=>{
-    return (req,res,next) =>{
-        Promise.resolve(requestHandler(req,res,next))
-        .catch((err)=>next(err))
-    }
-}
-export {asyncHandler}
-
+const asyncHandler = (requestHandler) => {
+  return (req, res, next) => {
+    Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err));
+  };
+};
+export { asyncHandler };
 
 /*
 This file creates an asyncHandler utility that makes handling errors from asynchronous Express route handlers easier.
