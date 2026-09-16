@@ -42,8 +42,11 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 
 
 
-app.get("/healthcheck",(req,res)=>{
-    console.log("Server is working")
-})
+app.get("/healthcheck", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is working",
+  });
+});
 
 export {app}
