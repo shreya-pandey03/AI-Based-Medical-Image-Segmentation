@@ -6,39 +6,48 @@ import {
   Upload,
   UserPlus,
   ClipboardPlus,
+  LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../services/auth.service";
 
 const stats = [
-  {
-    title: "Total Patients",
-    value: "0",
-    icon: Users,
-  },
-  {
-    title: "Total Scans",
-    value: "0",
-    icon: Activity,
-  },
-  {
-    title: "AI Analyses",
-    value: "0",
-    icon: Brain,
-  },
-  {
-    title: "Reports",
-    value: "0",
-    icon: FileText,
-  },
+  { title: "Total Patients", value: "0", icon: Users },
+  { title: "Total Scans", value: "0", icon: Activity },
+  { title: "AI Analyses", value: "0", icon: Brain },
+  { title: "Reports", value: "0", icon: FileText },
 ];
 
 function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+      navigate("/login", { replace: true });
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Overview of your medical imaging and AI analysis activity.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Overview of your medical imaging and AI analysis activity.
+          </p>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400"
+        >
+          <LogOut size={17} />
+          Logout
+        </button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -94,16 +103,26 @@ function Dashboard() {
           <h2 className="font-semibold text-white">Quick Actions</h2>
 
           <div className="mt-5 space-y-3">
-            <button className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-blue-500/50 hover:bg-slate-800">
+            <button
+              onClick={() => navigate("/scans")}
+              className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-blue-500/50 hover:bg-slate-800"
+            >
               <Upload size={18} className="text-blue-400" />
+
               <div>
                 <p className="text-sm font-medium text-white">Upload Scan</p>
-                <p className="text-xs text-slate-500">Upload a medical image</p>
+                <p className="text-xs text-slate-500">
+                  Upload a medical image
+                </p>
               </div>
             </button>
 
-            <button className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-blue-500/50 hover:bg-slate-800">
+            <button
+              onClick={() => navigate("/patients")}
+              className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-emerald-500/50 hover:bg-slate-800"
+            >
               <UserPlus size={18} className="text-emerald-400" />
+
               <div>
                 <p className="text-sm font-medium text-white">Add Patient</p>
                 <p className="text-xs text-slate-500">
@@ -112,8 +131,12 @@ function Dashboard() {
               </div>
             </button>
 
-            <button className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-blue-500/50 hover:bg-slate-800">
+            <button
+              onClick={() => navigate("/reports")}
+              className="flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-left transition hover:border-purple-500/50 hover:bg-slate-800"
+            >
               <ClipboardPlus size={18} className="text-purple-400" />
+
               <div>
                 <p className="text-sm font-medium text-white">View Reports</p>
                 <p className="text-xs text-slate-500">
@@ -127,4 +150,5 @@ function Dashboard() {
     </div>
   );
 }
+
 export default Dashboard;

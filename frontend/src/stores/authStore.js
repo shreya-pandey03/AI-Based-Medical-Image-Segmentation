@@ -18,6 +18,7 @@ const useAuthStore = create((set) => ({
       set({
         user: data.user,
         isAuthenticated: true,
+        isLoading: false,
       });
     }
 
@@ -31,6 +32,7 @@ const useAuthStore = create((set) => ({
       set({
         user: data.user,
         isAuthenticated: true,
+        isLoading: false,
       });
     }
 
@@ -40,7 +42,6 @@ const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       const data = await getCurrentUser();
-
       const user = data?.user ?? data;
 
       if (user) {
@@ -78,9 +79,11 @@ const useAuthStore = create((set) => ({
       set({
         user: null,
         isAuthenticated: false,
+        isLoading: false,
       });
     }
   },
 }));
+
 
 export default useAuthStore;

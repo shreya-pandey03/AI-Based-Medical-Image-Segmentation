@@ -38,10 +38,8 @@ const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, fullName, role, specialization } =
     req.body;
 
-  if (
-    [username, email, password, fullName].some((field) => field.trim === "")
-  ) {
-    throw new ApiError(404, "User related fileds are required");
+  if ([username, email, password, fullName].some((field) => !field?.trim())) {
+    throw new ApiError(400, "User related fields are required");
   }
 
   const existingUser = await User.findOne({
@@ -63,7 +61,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // As profile image is not required field we are not returning any api error
 
-  const profileImage = await uploadOnCloudinary(profileImageLocalPath);
+  let profileImage = null;
+
+  if (profileImageLocalPath) {
+    profileImage = await uploadOnCloudinary(profileImageLocalPath);
+  }
 
   const user = await User.create({
     username,
@@ -97,16 +99,15 @@ const generateAccessandRefreshToken = async (userId) => {
   // Step 6: now use user.save("validate brfore save:true")
   // Step 7: now return accessToken and refreshToken
 
-  try {
-    if (!userId) {
-      throw new ApiError(400, "Invalid userId");
-    }
-
+ try {
     const user = await User.findById(userId);
 
-    const accessToken = await user.generateAccessToken();
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
 
-    const refreshToken = await user.generateRefreshToken();
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
 
@@ -114,9 +115,10 @@ const generateAccessandRefreshToken = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
+    console.error("TOKEN GENERATION ERROR:", error);
     throw new ApiError(
       500,
-      "Something went wrong while generating refresh and access token",
+      "Something went wrong while generating refresh and access token"
     );
   }
 };
