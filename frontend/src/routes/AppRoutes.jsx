@@ -1,10 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
 import AuthLayout from "../layouts/AuthLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
+import Patients from "../pages/Patients";
+import PatientDetails from "../pages/PatientDetails";
+import Placeholder from "../pages/Placeholder";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
-import Placeholder from "../pages/Placeholder";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -24,7 +26,12 @@ function AppRoutes() {
 
           <Route
             path="/patients"
-            element={<Placeholder title="Patients" />}
+            element={<Patients />}
+          />
+
+          <Route
+            path="/patients/:id"
+            element={<PatientDetails />}
           />
 
           <Route

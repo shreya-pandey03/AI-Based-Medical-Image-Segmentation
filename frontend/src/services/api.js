@@ -16,7 +16,9 @@ api.interceptors.response.use(
     const isAuthRoute =
       originalRequest?.url?.includes("/users/login") ||
       originalRequest?.url?.includes("/users/register") ||
-      originalRequest?.url?.includes("/users/refresh-token");
+      originalRequest?.url?.includes("/users/refresh-token") ||
+      originalRequest?.url?.includes("/users/logout") ||
+      originalRequest?.url?.includes("/users/current-user");
 
     if (
       error.response?.status === 401 &&

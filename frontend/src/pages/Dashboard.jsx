@@ -9,7 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../services/auth.service";
+import useAuthStore from "../stores/authStore";
 
 const stats = [
   { title: "Total Patients", value: "0", icon: Users },
@@ -20,10 +20,11 @@ const stats = [
 
 function Dashboard() {
   const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      await logout();
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
@@ -111,9 +112,7 @@ function Dashboard() {
 
               <div>
                 <p className="text-sm font-medium text-white">Upload Scan</p>
-                <p className="text-xs text-slate-500">
-                  Upload a medical image
-                </p>
+                <p className="text-xs text-slate-500">Upload a medical image</p>
               </div>
             </button>
 

@@ -14,7 +14,7 @@ const cookieOptions = {
   secure: process.env.NODE_ENV === "production", // returns true or false
   // if in .enc file if you have assign it value "development", then from your local laptop this alllows you work from that
   // if its production then And the browser will only send the cookie over HTTPS.
-  sameSite: "strict",
+  sameSite: "lax",
 };
 /*
 So each option protects against a different type of problem:
@@ -99,7 +99,7 @@ const generateAccessandRefreshToken = async (userId) => {
   // Step 6: now use user.save("validate brfore save:true")
   // Step 7: now return accessToken and refreshToken
 
- try {
+  try {
     const user = await User.findById(userId);
 
     if (!user) {
@@ -118,7 +118,7 @@ const generateAccessandRefreshToken = async (userId) => {
     console.error("TOKEN GENERATION ERROR:", error);
     throw new ApiError(
       500,
-      "Something went wrong while generating refresh and access token"
+      "Something went wrong while generating refresh and access token",
     );
   }
 };
@@ -185,7 +185,7 @@ const userLogout = asyncHandler(async (req, res) => {
         refreshToken: 1, // this removes the field from the document
       },
     },
-    { new: true },
+   { returnDocument: "after" },
   );
 
   return res
@@ -205,8 +205,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   // Step 7: now generate new tokens using generate tokens functions and generate new refresh token
   // Step 8: return the res
 
-  const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+const incomingRefreshToken =
+  req.cookies?.refreshToken || req.body?.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(404, "Unauthorized request, missing refresh token");
   }
@@ -235,11 +235,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .cookie("accessToken", accessToken, cookieOptions)
       .cookie("refreshToken", newRefreshToken, cookieOptions)
       .json(
-        new ApiResponse(),
-        200,
-        { accessToken, refreshToken: newRefreshToken },
-        "Access token refreshed",
-        "Access token refreshed",
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed",
+        ),
       );
   } catch (error) {
     throw new ApiError(401, "Refresh token expired or invalid");
@@ -327,7 +327,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         email: email,
       },
     },
-    { new: true },
+   { returnDocument: "after" },
   ).select(" -password -refreshToken ");
 
   return res
@@ -370,7 +370,7 @@ const deleteProfileImage = asyncHandler(async (req, res) => {
         profileImage: "",
       },
     },
-    { new: true },
+   { returnDocument: "after" },
   ).select("-password -refreshToken");
 
   if (!updatedUser) {
@@ -413,7 +413,7 @@ const updateProfileImage = asyncHandler(async (req, res) => {
         profileImage: newProfileImage.url,
       },
     },
-    { new: true },
+  { returnDocument: "after" },
   ).select(" -password -refreshToken");
 
   if (!user) {
@@ -469,7 +469,7 @@ const uploadProfileImage = asyncHandler(async (req, res) => {
         profileImage: profileImage.url,
       },
     },
-    { new: true },
+  { returnDocument: "after" },
   ).select(" -password -refreshToken");
 
   if (!user) {
