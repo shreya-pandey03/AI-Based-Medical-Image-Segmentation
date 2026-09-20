@@ -9,6 +9,8 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import Scans from "../pages/Scans";
+import ScanDetails from "../pages/ScanDetails";
 
 function AppRoutes() {
   return (
@@ -24,42 +26,23 @@ function AppRoutes() {
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route
-            path="/patients"
-            element={<Patients />}
-          />
+          <Route path="/patients" element={<Patients />} />
 
-          <Route
-            path="/patients/:id"
-            element={<PatientDetails />}
-          />
+          <Route path="/patients/:id" element={<PatientDetails />} />
 
-          <Route
-            path="/scans"
-            element={<Placeholder title="Medical Scans" />}
-          />
+          <Route path="/scans" element={<Scans />} />
 
-          <Route
-            path="/reports"
-            element={<Placeholder title="Reports" />}
-          />
+          <Route path="/scans/:id" element={<ScanDetails />} />
 
-          <Route
-            path="/settings"
-            element={<Placeholder title="Settings" />}
-          />
+          <Route path="/reports" element={<Placeholder title="Reports" />} />
+
+          <Route path="/settings" element={<Placeholder title="Settings" />} />
         </Route>
       </Route>
 
-      <Route
-        path="/"
-        element={<Navigate to="/dashboard" replace />}
-      />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      <Route
-        path="*"
-        element={<Navigate to="/dashboard" replace />}
-      />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }

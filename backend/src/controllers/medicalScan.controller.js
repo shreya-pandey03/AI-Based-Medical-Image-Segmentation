@@ -118,7 +118,7 @@ const getScanById = asyncHandler(async(req,res)=>{
             path: "detectedRegions"
         }
         })
-        .populate("patientId", "patientName age gender contactNumber")
+       .populate("patientId", "name age gender contactNumber")
         .populate("uploadedBy", "fullName email role specialization");
 
     if (!scan) {
