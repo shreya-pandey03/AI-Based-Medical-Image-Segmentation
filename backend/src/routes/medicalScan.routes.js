@@ -23,7 +23,7 @@ router.route("/:id")
 
 // Doctor verification on bounding box
 router.patch(
-  "/:regionId/verify-region",
+  "/:id/verify-region",
   authorizeRoles("doctor", "radiologist", "admin"),
   verifyDetectedRegion
 );

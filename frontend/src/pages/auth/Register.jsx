@@ -1,10 +1,4 @@
-import {
-  Activity,
-  Lock,
-  Mail,
-  User,
-  UserPlus,
-} from "lucide-react";
+import { Activity, Lock, Mail, User, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../../stores/authStore";
@@ -66,8 +60,7 @@ function Register() {
       navigate("/dashboard", { replace: true });
     } catch (error) {
       setError(
-        error.response?.data?.message ||
-          "Unable to create your account."
+        error.response?.data?.message || "Unable to create your account.",
       );
     } finally {
       setLoading(false);
@@ -81,9 +74,7 @@ function Register() {
           <Activity size={24} />
         </div>
 
-        <h1 className="text-3xl font-bold text-white">
-          Create your account
-        </h1>
+        <h1 className="text-3xl font-bold text-white">Create your account</h1>
 
         <p className="mt-2 text-sm text-slate-400">
           Set up your medical imaging workspace.
@@ -140,9 +131,7 @@ function Register() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">
-            Email
-          </label>
+          <label className="mb-2 block text-sm text-slate-300">Email</label>
 
           <div className="relative">
             <Mail
@@ -163,9 +152,7 @@ function Register() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">
-            Password
-          </label>
+          <label className="mb-2 block text-sm text-slate-300">Password</label>
 
           <div className="relative">
             <Lock
@@ -188,9 +175,7 @@ function Register() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm text-slate-300">
-              Role
-            </label>
+            <label className="mb-2 block text-sm text-slate-300">Role</label>
 
             <select
               name="role"
@@ -244,10 +229,7 @@ function Register() {
 
         <p className="text-center text-sm text-slate-500">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-blue-400 hover:text-blue-300"
-          >
+          <Link to="/login" className="text-blue-400 hover:text-blue-300">
             Sign in
           </Link>
         </p>

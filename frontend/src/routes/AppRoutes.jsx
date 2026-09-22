@@ -12,6 +12,7 @@ import PublicRoute from "./PublicRoute";
 import Scans from "../pages/Scans";
 import ScanDetails from "../pages/ScanDetails";
 import ScanViewer from "../pages/ScanViewer";
+import AIAnalysis from "../pages/AIAnalysis";
 
 function AppRoutes() {
   return (
@@ -36,6 +37,8 @@ function AppRoutes() {
           <Route path="/scans/:id" element={<ScanDetails />} />
 
           <Route path="/scans/:id/viewer" element={<ScanViewer />} />
+
+          <Route path="/scans/:id/ai-analysis" element={<AIAnalysis />} />
 
           <Route path="/reports" element={<Placeholder title="Reports" />} />
 

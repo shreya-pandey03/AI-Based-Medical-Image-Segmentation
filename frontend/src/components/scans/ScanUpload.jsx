@@ -51,6 +51,7 @@ function ScanUpload({ patients, onSubmit, onClose, isUploading }) {
           </div>
 
           <button
+            type="button"
             onClick={onClose}
             className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
           >
@@ -145,7 +146,9 @@ function ScanUpload({ patients, onSubmit, onClose, isUploading }) {
                 type="file"
                 accept=".jpg,.jpeg,.png,.webp"
                 className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  setFile(e.target.files?.[0] || null);
+                }}
               />
             </label>
           </div>
@@ -161,7 +164,7 @@ function ScanUpload({ patients, onSubmit, onClose, isUploading }) {
 
             <button
               type="submit"
-              disabled={isUploading || !file}
+              disabled={isUploading || !file || !scanType}
               className="flex-1 rounded-xl bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isUploading ? "Analyzing..." : "Upload & Analyze"}

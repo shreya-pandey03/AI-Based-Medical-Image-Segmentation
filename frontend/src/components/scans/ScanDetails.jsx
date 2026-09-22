@@ -1,6 +1,7 @@
 import { ArrowLeft, Calendar, Trash2 } from "lucide-react";
 import ScanStatus from "./ScanStatus";
-import { Eye } from "lucide-react";
+import { Brain, Eye } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 function ScanDetails({ scan, onBack, onDelete }) {
@@ -9,6 +10,7 @@ function ScanDetails({ scan, onBack, onDelete }) {
   }
 
   const regions = scan.analysis?.detectedRegions || [];
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -131,6 +133,14 @@ function ScanDetails({ scan, onBack, onDelete }) {
           >
             <Eye size={17} />
             Open Medical Viewer
+          </button>
+
+          <button
+            onClick={() => navigate(`/scans/${scan._id}/ai-analysis`)}
+            className="flex items-center gap-2 rounded-xl bg-purple-600 px-4 py-3 text-sm font-medium text-white hover:bg-purple-500"
+          >
+            <Brain size={17} />
+            AI Analysis
           </button>
 
           <button
