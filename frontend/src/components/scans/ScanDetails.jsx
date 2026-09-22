@@ -1,5 +1,7 @@
 import { ArrowLeft, Calendar, Trash2 } from "lucide-react";
 import ScanStatus from "./ScanStatus";
+import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ScanDetails({ scan, onBack, onDelete }) {
   if (!scan) {
@@ -122,6 +124,14 @@ function ScanDetails({ scan, onBack, onDelete }) {
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => navigate(`/scans/${scan._id}/viewer`)}
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-500"
+          >
+            <Eye size={17} />
+            Open Medical Viewer
+          </button>
 
           <button
             onClick={() => onDelete(scan._id)}

@@ -10,12 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cornerstonejs/core": "^5.10.7",
+    "@cornerstonejs/dicom-image-loader": "^5.10.7",
+    "@cornerstonejs/tools": "^5.10.7",
     "@tailwindcss/vite": "^4.3.3",
     "axios": "^1.20.0",
+    "daikon": "^1.2.46",
+    "dicom-parser": "^1.8.21",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.47.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-hot-toast": "^2.6.1",
     "react-router-dom": "^7.18.4",
     "zustand": "^5.0.15"
   },
