@@ -14,7 +14,7 @@ const cookieOptions = {
   secure: process.env.NODE_ENV === "production", // returns true or false
   // if in .enc file if you have assign it value "development", then from your local laptop this alllows you work from that
   // if its production then And the browser will only send the cookie over HTTPS.
-  sameSite: "strict",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 };
 /*
 So each option protects against a different type of problem:
