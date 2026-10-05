@@ -24,7 +24,6 @@ const router = Router();
 router.route("/register").post(upload.fields([{name:"profileImage",maxCount:1}]),registerUser);
 router.route("/login").post(userLogin)
 router.route("/refresh-token").post(refreshAccessToken)
-
 router.route("/logout").post(verifyJWT,userLogout)
 router.route("/current-user").get(verifyJWT,getCurrentUser)
 router.route("/change-password").post(verifyJWT, changeCurrentPassword)

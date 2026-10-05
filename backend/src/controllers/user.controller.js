@@ -16,6 +16,9 @@ const cookieOptions = {
   // if its production then And the browser will only send the cookie over HTTPS.
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 };
+
+
+
 /*
 So each option protects against a different type of problem:
 
@@ -38,10 +41,8 @@ const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, fullName, role, specialization } =
     req.body;
 
-  if (
-    [username, email, password, fullName].some((field) => field.trim === "")
-  ) {
-    throw new ApiError(404, "User related fileds are required");
+  if ([username, email, password, fullName].some((field) => !field?.trim())) {
+    throw new ApiError(400, "User related fields are required");
   }
 
   const existingUser = await User.findOne({
@@ -63,7 +64,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // As profile image is not required field we are not returning any api error
 
-  const profileImage = await uploadOnCloudinary(profileImageLocalPath);
+  let profileImage = null;
+
+  if (profileImageLocalPath) {
+    profileImage = await uploadOnCloudinary(profileImageLocalPath);
+  }
 
   const user = await User.create({
     username,
@@ -98,15 +103,14 @@ const generateAccessandRefreshToken = async (userId) => {
   // Step 7: now return accessToken and refreshToken
 
   try {
-    if (!userId) {
-      throw new ApiError(400, "Invalid userId");
-    }
-
     const user = await User.findById(userId);
 
-    const accessToken = await user.generateAccessToken();
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
 
-    const refreshToken = await user.generateRefreshToken();
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
 
@@ -114,6 +118,7 @@ const generateAccessandRefreshToken = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
+    console.error("TOKEN GENERATION ERROR:", error);
     throw new ApiError(
       500,
       "Something went wrong while generating refresh and access token",
@@ -175,6 +180,7 @@ const userLogin = asyncHandler(async (req, res) => {
       ),
     );
 });
+
 const userLogout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user?._id,
@@ -183,7 +189,7 @@ const userLogout = asyncHandler(async (req, res) => {
         refreshToken: 1, // this removes the field from the document
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 
   return res
@@ -194,41 +200,50 @@ const userLogout = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  // Step 1: Store the incoming refresh token from req.cookies or req.body
-  // Step 2: If there is no refresh token, throw an ApiError
-  // Step 3: Verify the refresh token using the secret stored in env and store the decoded token
-  // Step 4: Find the user using decodedToken._id
-  // Step 5: Match the incoming refresh token with the refresh token stored in the user document
-  // Step 6: If they don't match, throw an ApiError
-  // Step 7: Generate new access and refresh tokens
-  // Step 8: Return the response
+  console.log("=== REFRESH TOKEN DEBUG ===");
+  console.log("req.cookies exists:", !!req.cookies);
+  console.log("refresh cookie exists:", !!req.cookies?.refreshToken);
+  console.log("req.body exists:", !!req.body);
+  console.log("body refresh token exists:", !!req.body?.refreshToken);
 
+  // Step 1: Get the incoming refresh token from cookies or request body
   const incomingRefreshToken =
     req.cookies?.refreshToken || req.body?.refreshToken;
 
+  // Step 2: If no refresh token is provided, throw an error
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized request, missing refresh token");
   }
 
   try {
+    // Step 3: Verify the refresh token using the refresh token secret
+    // and store the decoded token
     const decodedToken = jwt.verify(
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET,
     );
 
+    // Step 4: Find the user using the ID from the decoded token
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {
-      throw new ApiError(401, "Refresh token expired or used");
+      throw new ApiError(401, "Refresh token expired or invalid");
     }
 
+    // Step 5: Compare the incoming refresh token with the token
+    // stored in the user's MongoDB document
     if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(401, "Refresh token expired or used");
+      throw new ApiError(401, "Refresh token expired or invalid");
     }
 
+    // Step 6: If the tokens don't match, throw an error
+    // This check is already handled above
+
+    // Step 7: Generate a new access token and refresh token
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessandRefreshToken(user._id);
 
+    // Step 8: Return the response with the new tokens
     return res
       .status(200)
       .cookie("accessToken", accessToken, cookieOptions)
@@ -244,6 +259,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         ),
       );
   } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
     throw new ApiError(401, "Refresh token expired or invalid");
   }
 });
@@ -329,7 +348,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         email: email,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).select(" -password -refreshToken ");
 
   return res
@@ -372,7 +391,7 @@ const deleteProfileImage = asyncHandler(async (req, res) => {
         profileImage: "",
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).select("-password -refreshToken");
 
   if (!updatedUser) {
@@ -415,7 +434,7 @@ const updateProfileImage = asyncHandler(async (req, res) => {
         profileImage: newProfileImage.url,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).select(" -password -refreshToken");
 
   if (!user) {
@@ -471,7 +490,7 @@ const uploadProfileImage = asyncHandler(async (req, res) => {
         profileImage: profileImage.url,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).select(" -password -refreshToken");
 
   if (!user) {
